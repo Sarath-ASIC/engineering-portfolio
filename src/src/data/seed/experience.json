@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "krisemi-intern",
+    "kind": "internship",
+    "title": "Intern — FPGA / RTL Design",
+    "org": "KriSemi Design Technology",
+    "location": "Bangalore",
+    "start": "",
+    "end": "",
+    "current": true,
+    "responsibilities": [],
+    "tools": [],
+    "achievements": [],
+    "upcoming": "RTL design of a Direct CXL to LPDDR5X for Edge AI super nodes",
+    "note": "Project details are not published. Responsibilities will be added once cleared with the employer.",
+    "order": 1
+  },
+  {
+    "slug": "mtech-rvce",
+    "kind": "education",
+    "title": "M.Tech, VLSI Design & Embedded Systems",
+    "org": "RV College of Engineering",
+    "location": "Bengaluru, Karnataka",
+    "start": "2025",
+    "end": "2027",
+    "current": true,
+    "responsibilities": [],
+    "tools": [],
+    "achievements": [],
+    "upcoming": "",
+    "note": "",
+    "order": 2
+  },
+  {
+    "slug": "btech-nss",
+    "kind": "education",
+    "title": "B.Tech, Electronics and Communication Engineering",
+    "org": "NSS College of Engineering",
+    "location": "Palakkad, Kerala",
+    "start": "",
+    "end": "",
+    "current": false,
+    "responsibilities": [],
+    "tools": [],
+    "achievements": [],
+    "upcoming": "",
+    "note": "",
+    "order": 3
+  }
+]

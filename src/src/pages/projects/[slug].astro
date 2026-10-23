@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getProjects, parseBody, STATUS_LABEL } from '../../lib/content';
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+const { project: p } = Astro.props;
+---
+<Base title={p.title} description={p.summary}>
+  <div class="wrap">
+    <div class="case">
+      <article>
+        <p class="crumb"><a href="/projects/">Projects</a> / {p.slug}</p>
+        <span class={`badge ${p.status}`}>{STATUS_LABEL[p.status] ?? p.status}</span>
+        <h1 style="font-size:clamp(28px,4.4vw,40px);line-height:1.15;margin:14px 0 14px">{p.title}</h1>
+        <p class="lead">{p.summary}</p>
+
+        {p.diagramUrl && (
+          <figure class="diagram" style="margin-top:28px">
+            <img src={p.diagramUrl} alt={p.diagramAlt ?? `${p.title} architecture diagram`} loading="lazy" />
+            {p.diagramAlt && <figcaption>{p.diagramAlt}</figcaption>}
+          </figure>
+        )}
+
+        <div style="margin-top:28px">
+          {p.sections.map((sec) => (
+            <section>
+              <h2>{sec.heading}</h2>
+              {parseBody(sec.body).map((b) => b.type === 'ul'
+                ? <ul>{b.items.map((i) => <li>{i}</li>)}</ul>
+                : <p>{b.text}</p>)}
+            </section>
+          ))}
+          {p.sections.length === 0 && <p class="empty">The case study for this project has not been written yet.</p>}
+        </div>
+
+        <section>
+          <h2>Evidence</h2>
+          {p.links.length > 0 ? (
+            <ul>{p.links.map((l) => <li><a href={l.url} target="_blank" rel="noopener noreferrer" style="border-bottom:1px solid var(--brown)">{l.label}</a>{l.kind ? ` (${l.kind})` : ''}</li>)}</ul>
+          ) : <p>No public repository, report or results are linked yet. They will be added here when available.</p>}
+        </section>
+      </article>
+
+      <aside class="facts" aria-label="Project facts">
+        <dl>
+          {p.kind && <div><dt>Type</dt><dd>{p.kind}</dd></div>}
+          {p.contribution && <div><dt>Contribution</dt><dd>{p.contribution}</dd></div>}
+          {p.period && <div><dt>Period</dt><dd>{p.period}</dd></div>}
+          {p.tools.length > 0 && <div><dt>Tools</dt><dd><ul>{p.tools.map((t) => <li>{t}</li>)}</ul></dd></div>}
+          {p.categories.length > 0 && <div><dt>Categories</dt><dd><ul>{p.categories.map((c) => <li>{c}</li>)}</ul></dd></div>}
+          {p.tags.length > 0 && <div><dt>Tags</dt><dd>{p.tags.join(', ')}</dd></div>}
+        </dl>
+      </aside>
+    </div>
+  </div>
+</Base>

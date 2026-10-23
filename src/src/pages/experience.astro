@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import { getExperience } from '../lib/content';
+const all = await getExperience();
+const work = all.filter((e) => e.kind !== 'education');
+const edu = all.filter((e) => e.kind === 'education');
+const when = (e: (typeof all)[number]) => e.start ? `${e.start} – ${e.current ? 'Present' : e.end || ''}` : e.current ? 'Present' : '';
+---
+<Base title="Experience" description="Internship experience and education.">
+  <section class="blk">
+    <div class="wrap">
+      <div class="label">Experience</div>
+      <h2>Internship</h2>
+      <p class="lead">Internship work is listed separately from academic and personal projects. Employer-confidential details are not published.</p>
+      <div class="timeline" style="margin-top:24px">
+        {work.map((e) => (
+          <div class="row">
+            <div class="when">{when(e)}</div>
+            <div>
+              <h3>{e.title}</h3>
+              <p class="org">{e.org}{e.location ? ` · ${e.location}` : ''}</p>
+              {e.responsibilities.length > 0 && <ul style="margin:10px 0 0 18px;color:var(--muted)">{e.responsibilities.map((r) => <li>{r}</li>)}</ul>}
+              {e.upcoming && <p class="note"><b style="color:var(--text);font-weight:500">Upcoming:</b> {e.upcoming}</p>}
+              {e.tools.length > 0 && <div class="tags">{e.tools.map((t) => <span>{t}</span>)}</div>}
+              {e.note && <p class="note">{e.note}</p>}
+            </div>
+          </div>
+        ))}
+        {work.length === 0 && <p class="empty">No experience entries yet.</p>}
+      </div>
+    </div>
+  </section>
+  <section class="blk" style="border-bottom:0">
+    <div class="wrap">
+      <div class="label">Background</div>
+      <h2>Education</h2>
+      <div class="timeline" style="margin-top:24px">
+        {edu.map((e) => (
+          <div class="row">
+            <div class="when">{when(e)}</div>
+            <div><h3>{e.title}</h3><p class="org">{e.org}{e.location ? ` · ${e.location}` : ''}</p></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,225 @@
+[
+  {
+    "title": "Adaptive CXL.mem-to-LPDDR5X Memory Architecture",
+    "slug": "cxl-lpddr5x-bridge",
+    "status": "in-progress",
+    "featured": true,
+    "published": true,
+    "order": 1,
+    "summary": "Synthesizable Verilog RTL prototype and SystemVerilog UVM verification environment for an adaptive memory path between a CXL.mem-style host interface and an LPDDR5X-oriented controller, aimed at high-performance AI systems.",
+    "categories": ["RTL Design", "Design Verification", "Research and Academic"],
+    "tags": ["CXL.mem", "LPDDR5X", "memory controller", "scheduler", "UVM"],
+    "tools": ["Verilog (IEEE 1364-2005)", "SystemVerilog", "UVM", "Synopsys VCS"],
+    "kind": "Academic minor project (MVE433P), RVCE",
+    "contribution": "",
+    "period": "2026",
+    "sections": [
+      {
+        "heading": "Scope",
+        "body": "An architecture and RTL prototype. It does not claim CXL, PCIe or JEDEC compliance. Any timing values in the design are placeholders and are labelled as non-JEDEC."
+      },
+      {
+        "heading": "Architecture",
+        "body": "Request path, in order:\n- Host / request generator\n- CXL.mem transaction interface\n- Transaction handler\n- Address mapper\n- Request buffer\n- Adaptive scheduler (age, row locality, read/write mix, priority, refresh)\n- LPDDR5X-oriented controller\n- Abstract PHY / DRAM interface"
+      },
+      {
+        "heading": "Design decisions",
+        "body": "- 64 B request line, 512-bit internal data path, byte enables, one tag per request.\n- x16 BL16 gives 32 B per burst, so one line takes two bursts. Data width, burst length and channel count are configurable; the first version uses one channel.\n- Ordering contract: completion may be out of order across different addresses and is in order for the same address. RTL and scoreboard both enforce it.\n- SAME_LINE_STRICT is on by default: a newer request to the same line waits until the older one is done.\n- A duplicate outstanding tag is treated as a host protocol violation, flagged by an assertion and a sticky status bit, and must never produce an ambiguous response.\n- All design files are plain Verilog (IEEE 1364-2005, .v and .vh). The UVM testbench is SystemVerilog and is kept separate from the RTL."
+      },
+      {
+        "heading": "Verification approach",
+        "body": "A UVM environment compatible with Questa, plus an RTL-only SystemVerilog smoke test for Verilator. Synopsys VCS is the simulator used for project reviews. The environment is under development; no coverage or pass results are published yet."
+      },
+      {
+        "heading": "Known limitations and open items",
+        "body": "- A per-byte write mask is kept in the abstract PHY interface. Compatibility with a real PHY is unresolved; read-modify-write is a documented future change.\n- Speculative-read hints are out of scope for the first version.\n- An optional occupancy-based output is allowed but is not claimed as a CXL protocol feature."
+      },
+      {
+        "heading": "References",
+        "body": "CXL-GPU (IEEE Micro, Nov/Dec 2025) and Ramulator 2.0 (IEEE Computer Architecture Letters, 2024)."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "SPI Master–Slave Coverage-Driven Verification",
+    "slug": "spi-cdv",
+    "status": "in-progress",
+    "featured": true,
+    "published": true,
+    "order": 2,
+    "summary": "Coverage-driven verification of an SPI master–slave design across all four CPOL/CPHA modes, with a dual-clock error-injection unit and a UVM environment with assertions.",
+    "categories": ["Design Verification", "RTL Design", "CDC and Lint", "Research and Academic"],
+    "tags": ["SPI", "CPOL/CPHA", "UVM", "SVA", "CDC", "coverage"],
+    "tools": ["SystemVerilog", "UVM", "SVA", "Synopsys VCS", "Fusion Compiler", "Makefile"],
+    "kind": "Academic project (MVE322IA / MVE323B1), RVCE",
+    "contribution": "",
+    "period": "2026",
+    "sections": [
+      {
+        "heading": "Design",
+        "body": "Synthesizable RTL for an SPI master–slave pair with an error-injection unit that crosses between two clock domains (synthesizable Verilog-2001). SDC constraints and a synthesis / STA evaluation guide accompany the design."
+      },
+      {
+        "heading": "Verification environment",
+        "body": "A 16-file UVM environment covering RTL, testbench, SVA assertions and a Makefile, targeting Synopsys VCS and Xcelium. Stimulus covers all four CPOL/CPHA modes."
+      },
+      {
+        "heading": "Tool flow",
+        "body": "Simulation runs on a university server with Synopsys VCS (R-2020.12-SP2-1) using -full64 -sverilog -debug_access+all. Synthesis uses Fusion Compiler (W-2024.09-SP3)."
+      },
+      {
+        "heading": "Debugging notes",
+        "body": "- Fixed an LSB bit error caused by changing CPOL/CPHA in the middle of a transaction.\n- Fixed a scoreboard pipeline-delay mismatch."
+      },
+      {
+        "heading": "Results",
+        "body": "Coverage and regression results are not published yet. They will be added here once collected from a clean run."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "TDC-to-SPI Interface with Asynchronous FIFO",
+    "slug": "tdc-spi-interface",
+    "status": "in-progress",
+    "featured": false,
+    "published": true,
+    "order": 3,
+    "summary": "FPGA-based interface that moves time-to-digital converter data into an SPI link across clock domains using a dual-clock FIFO with Gray-coded pointers.",
+    "categories": ["RTL Design", "FPGA", "CDC and Lint", "Research and Academic"],
+    "tags": ["TDC", "SPI", "async FIFO", "Gray code", "CDC"],
+    "tools": ["SystemVerilog"],
+    "kind": "Academic project (MVE322IA), RVCE",
+    "contribution": "",
+    "period": "2026",
+    "sections": [
+      {
+        "heading": "Design",
+        "body": "Dual-clock FIFO with Gray-coded read and write pointers and an almost-full threshold sized for the crossing, written in SystemVerilog RTL."
+      },
+      {
+        "heading": "Deliverables",
+        "body": "A written report in DOCX and LaTeX is being produced alongside the RTL."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "8-bit CDAC Layout in 45 nm CMOS",
+    "slug": "cdac-layout",
+    "status": "in-progress",
+    "featured": false,
+    "published": true,
+    "order": 4,
+    "summary": "Analog layout of an 8-bit capacitive DAC in 45 nm CMOS (GPDK 45 nm) using Cadence Virtuoso.",
+    "categories": ["ASIC Design", "Research and Academic"],
+    "tags": ["analog layout", "CDAC", "45 nm", "Virtuoso"],
+    "tools": ["Cadence Virtuoso", "GPDK 45 nm"],
+    "kind": "Academic project, RVCE",
+    "contribution": "",
+    "period": "2026",
+    "sections": [
+      {
+        "heading": "Work so far",
+        "body": "Bootstrap-switch transistor sizing, derived from a 28 nm pipeline-SAR ADC paper, produced Virtuoso-ready W/L values for the layout."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "E-TSPC / Heterogeneous CMOS Frequency Divider",
+    "slug": "etspc-frequency-divider",
+    "status": "in-progress",
+    "featured": false,
+    "published": true,
+    "order": 5,
+    "summary": "E-TSPC / PMOS edge-assist heterogeneous CMOS frequency divider, developed as a project-based-learning assignment for Analog IC Design (MVE321IA).",
+    "categories": ["ASIC Design", "Research and Academic"],
+    "tags": ["E-TSPC", "frequency divider", "analog IC design"],
+    "tools": [],
+    "kind": "Academic team project (MVE321IA), RVCE",
+    "contribution": "Team project with S Rohit, under Dr. Shylashree N.",
+    "period": "2026",
+    "sections": [
+      {
+        "heading": "Deliverables",
+        "body": "Technical report (with a LaTeX version) and two-phase project presentations."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "RV32I Processor",
+    "slug": "rv32i-processor",
+    "status": "planned",
+    "featured": false,
+    "published": true,
+    "order": 6,
+    "summary": "A processor that follows the RV32I base integer instruction set, planned as a pipelined RTL design with verification and PPA reporting. Currently in the learning and architecture-study stage.",
+    "categories": ["RTL Design", "Design Verification"],
+    "tags": ["RISC-V", "RV32I", "pipelining", "computer architecture"],
+    "tools": [],
+    "kind": "Personal project",
+    "contribution": "",
+    "period": "",
+    "sections": [
+      {
+        "heading": "Status",
+        "body": "No RTL is published yet. Work so far is studying RISC-V architecture and the five-stage pipeline before implementation."
+      }
+    ],
+    "links": []
+  },
+  {
+    "title": "Cache Controller",
+    "slug": "cache-controller",
+    "status": "planned",
+    "featured": false,
+    "published": false,
+    "order": 20,
+    "summary": "Draft entry. Status and evidence to be confirmed before publishing.",
+    "categories": ["RTL Design"],
+    "tags": [],
+    "tools": [],
+    "kind": "",
+    "contribution": "",
+    "period": "",
+    "sections": [],
+    "links": []
+  },
+  {
+    "title": "AXI4-Lite Peripheral Block",
+    "slug": "axi4-lite-peripheral",
+    "status": "planned",
+    "featured": false,
+    "published": false,
+    "order": 21,
+    "summary": "Draft entry. Status and evidence to be confirmed before publishing.",
+    "categories": ["RTL Design"],
+    "tags": [],
+    "tools": [],
+    "kind": "",
+    "contribution": "",
+    "period": "",
+    "sections": [],
+    "links": []
+  },
+  {
+    "title": "SyncFlow FIFO",
+    "slug": "syncflow-fifo",
+    "status": "planned",
+    "featured": false,
+    "published": false,
+    "order": 22,
+    "summary": "Draft entry. Status and evidence to be confirmed before publishing.",
+    "categories": ["RTL Design"],
+    "tags": [],
+    "tools": [],
+    "kind": "",
+    "contribution": "",
+    "period": "",
+    "sections": [],
+    "links": []
+  }
+]
