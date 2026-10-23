@@ -1,0 +1,74 @@
+---
+import '../styles/global.css';
+import { getSettings } from '../lib/content';
+interface Props { title?: string; description?: string; noindex?: boolean }
+const s = await getSettings();
+const { title, description = s.seoDescription, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} — ${s.name}` : `${s.name} — ${s.roleLines.join(' · ')}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/projects/', label: 'Projects' },
+  { href: '/experience/', label: 'Experience' },
+  { href: '/skills/', label: 'Skills' },
+  { href: '/research/', label: 'Research' },
+  { href: '/#contact', label: 'Contact' },
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#090907" />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={s.name} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta name="twitter:card" content="summary" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="/">sarath<span>.</span>kc</a>
+      <button class="menu-btn" aria-expanded="false" aria-controls="nav" id="menu-btn">Menu</button>
+      <nav class="primary" id="nav" aria-label="Primary">
+        <ul>
+          {nav.map((n) => (
+            <li><a href={n.href} aria-current={path.startsWith(n.href) && n.href !== '/' && !n.href.includes('#') ? 'page' : undefined}>{n.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main"><slot /></main>
+  <footer class="site">
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} {s.name}</span>
+      <span>
+        <a href={s.github} target="_blank" rel="noopener noreferrer">GitHub</a> ·
+        <a href={s.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a> ·
+        <a href={`mailto:${s.email}`}>Email</a>
+      </span>
+    </div>
+  </footer>
+  <script>
+    const btn = document.getElementById('menu-btn');
+    const nav = document.getElementById('nav');
+    btn?.addEventListener('click', () => {
+      const open = nav!.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+    nav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+      nav.classList.remove('open'); btn?.setAttribute('aria-expanded', 'false');
+    }));
+  </script>
+</body>
+</html>

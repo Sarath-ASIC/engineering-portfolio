@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { getSkills, getProjects, LEVEL_LABEL } from '../lib/content';
+const skills = await getSkills();
+const projects = await getProjects();
+const title = new Map(projects.map((p) => [p.slug, p.title]));
+const groups = [...new Set(skills.map((s) => s.category))];
+---
+<Base title="Skills" description="Technical skills labelled by what is used in projects, known, or being learned.">
+  <section class="blk" style="border-bottom:0">
+    <div class="wrap">
+      <div class="label">Capabilities</div>
+      <h2>Skills</h2>
+      <p class="lead">Labels reflect actual use. No percentage bars. Each skill links to the project that supports it.</p>
+      <div class="legend">
+        {Object.values(LEVEL_LABEL).map((l) => <span class="badge">{l}</span>)}
+      </div>
+      {groups.map((g) => (
+        <div class="skill-group">
+          <h3>{g}</h3>
+          {skills.filter((s) => s.category === g).map((s) => (
+            <div class="skill">
+              <div>
+                {s.name}
+                {s.evidence && <small>{s.evidence}</small>}
+                {s.projects.filter((x) => title.has(x)).length > 0 && (
+                  <small>Projects: {s.projects.filter((x) => title.has(x)).map((x, i, a) => (
+                    <><a href={`/projects/${x}/`}>{title.get(x)}</a>{i < a.length - 1 ? ', ' : ''}</>
+                  ))}</small>
+                )}
+              </div>
+              <div><span class={`badge ${s.level === 'used' ? 'completed' : s.level === 'working' ? 'in-progress' : 'planned'}`}>{LEVEL_LABEL[s.level]}</span></div>
+            </div>
+          ))}
+        </div>
+      ))}
+      {skills.length === 0 && <p class="empty">No skills published yet.</p>}
+    </div>
+  </section>
+</Base>
