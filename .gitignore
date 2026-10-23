@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+studio/node_modules/
+studio/dist/
+studio/.sanity/
+seed.ndjson
+.DS_Store
